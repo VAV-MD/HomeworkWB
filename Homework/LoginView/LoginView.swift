@@ -15,7 +15,8 @@ struct LoginView: View {
     @FocusState private var focusField: FocusField?
     @State private var path = NavigationPath()
     private let maskPhone = "+7 (XXX) XXX - XX - XX"
-    
+    private let animationDuretion = 0.2
+
     var body: some View {
         NavigationStack(path: $path, root: {
             ZStack {
@@ -39,11 +40,15 @@ struct LoginView: View {
                                 isLoading = true
                             }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation(.easeInOut) {
+                                withAnimation(.easeInOut(duration: animationDuretion)) {
                                     isLoading = false
                                     textFieldState = phoneNumber == "5555555555" ? .error : .success
                                 }
-                                path.append(phoneNumber)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + animationDuretion) {
+                                    if textFieldState == .success {
+                                        path.append(phoneNumber)
+                                    }
+                                }
                             }
                         }
                         .padding(.bottom, 44)
